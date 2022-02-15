@@ -8,16 +8,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ImageService {
-
     @Autowired
     @Qualifier("jdbc")
     ImageRepository imageRepository;
 
-    public String storeImage(ImageDTO imageDTO, String category){
+    public String storeImage(ImageDTO imageDTO, String category) {
         return imageRepository.storeImage(category, imageDTO.getContent());
     }
 
-    public ImageDTO getImage(String fileName){
-        return  new ImageDTO(imageRepository.readImage(fileName));
+    public ImageDTO getImage(String fileName) {
+        return new ImageDTO(imageRepository.readImage(fileName));
     }
 }

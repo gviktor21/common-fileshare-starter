@@ -2,11 +2,8 @@ package com.codecool.fileshare.repository;
 
 import org.springframework.stereotype.Component;
 
-
 @Component("jdbc")
-public class ImageJdbcRepository implements ImageRepository{
-
-
+public class ImageJdbcRepository implements ImageRepository {
     @Override
     public String storeImage(String category, String content) {
         // implement store image in database here
