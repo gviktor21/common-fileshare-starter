@@ -7,5 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FileshareApplication {
     public static void main(String[] args) {
         SpringApplication.run(FileshareApplication.class, args);
+        System.out.println("Jozso");
     }
 }
