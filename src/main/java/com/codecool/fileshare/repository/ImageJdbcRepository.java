@@ -4,6 +4,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.util.UUID;
 
 
 @Component("jdbc")
@@ -29,8 +30,19 @@ public class ImageJdbcRepository implements ImageRepository {
 
     @Override
     public String readImage(String uuid) {
-        // implement readImage from database here
-        // return base64 encoded image
+
+        try (PreparedStatement stmt = getConnection().prepareStatement("select encode(content,'escape') as content from image WHERE id=?")) {
+            stmt.setObject(1, UUID.fromString(uuid),java.sql.Types.OTHER);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                return rs.getString("content");
+            }else{
+                System.out.println("No such a content");
+            }
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
         return null;
     }
 
