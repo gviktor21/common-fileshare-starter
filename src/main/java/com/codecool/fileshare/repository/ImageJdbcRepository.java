@@ -1,6 +1,7 @@
 package com.codecool.fileshare.repository;
 
 import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -18,6 +19,10 @@ public class ImageJdbcRepository implements ImageRepository {
         // https://codebeautify.org/base64-to-image-converter
     *
     * */
+
+    @Autowired
+    private  Database db;
+
     @Override
     public String storeImage(String category, String content) {
         String uuid = null;
@@ -47,18 +52,21 @@ public class ImageJdbcRepository implements ImageRepository {
     }
 
 
-    private static Connection getConnection() {
+    private  Connection getConnection() {
         var ds = new PGSimpleDataSource();
-        ds.setURL(System.getenv("DB_URL"));
-        ds.setUser(System.getenv("DB_USER"));
-        ds.setPassword(System.getenv("DB_PASSWORD"));
+        //ds.setURL(System.getenv("DB_URL"));
+       // ds.setUser(System.getenv("DB_USER"));
+        //ds.setPassword(System.getenv("DB_PASSWORD"));
+        ds.setURL(db.getUrl());
+        ds.setUser(db.getUsername());
+        ds.setPassword(db.getPassword());
         try {
             return ds.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-    private static boolean insertNewImage(String category, String content){
+    private  boolean insertNewImage(String category, String content){
         String extension = content.split(";")[0].split("/")[1];
         System.out.println("The extension is"+extension);
         try (PreparedStatement stmt = getConnection().prepareStatement("INSERT INTO image(category,content,extension) VALUES(?,?,?)")) {
@@ -77,7 +85,7 @@ public class ImageJdbcRepository implements ImageRepository {
         }
         return false;
     }
-    private static String getLastUUID(String content){
+    private  String getLastUUID(String content){
             try (PreparedStatement stmt = getConnection().prepareStatement("select id from image WHERE content=?")) {
                 stmt.setBytes(1,content.getBytes());
                 ResultSet rs = stmt.executeQuery();
